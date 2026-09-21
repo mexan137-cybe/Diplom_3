@@ -90,6 +90,5 @@ def login_user(driver, create_user):
     login_page.fill_email(data["user"]["email"])
     login_page.fill_password(data["password"])
     login_page.authorized_user()
-    WebDriverWait(driver, 10).until(
-    EC.visibility_of_element_located(MainLocators.ORDER_BUTTON))
+    login_page.wait_visible(MainLocators.ORDER_BUTTON)
     return driver

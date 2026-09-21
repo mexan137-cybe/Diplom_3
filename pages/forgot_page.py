@@ -17,3 +17,7 @@ class ForgotPasswordPage(BasePage):
     @allure.step("Нажать на кнопку «Восстановить»")
     def click_recovery_button(self) -> None:
         self.js_click(ForgotPasswordLocators.RECOVERY_BUTTON)
+
+    def page_is_visible(self) -> None:
+        if self.is_visible(ForgotPasswordLocators.TITLE):
+            return True

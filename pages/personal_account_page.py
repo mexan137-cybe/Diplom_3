@@ -1,8 +1,5 @@
 import allure
-from data.config import Url
 from locators.personal_account_locators import PersonalAccountLocators
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 
 class PersonalAccountPage(BasePage):
@@ -25,5 +22,5 @@ class PersonalAccountPage(BasePage):
 
     @allure.step("Получить номер заказа из открытого модального окна деталей")
     def get_modal_order_id(self) -> str:
-        element = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(PersonalAccountLocators.ORDER_CARD_ID))
+        element = self.wait_visible(PersonalAccountLocators.ORDER_CARD_ID)
         return element.text.strip()

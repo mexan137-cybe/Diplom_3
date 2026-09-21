@@ -1,6 +1,4 @@
 import allure
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from data.config import Url
 from locators.main_page_locators import MainLocators, IngredientDetailsModalLocators
 from pages.base_page import BasePage
@@ -20,18 +18,21 @@ class MainPage(BasePage):
     @allure.step("Кликнуть по ингредиенту с именем '{ingredient_name}'")
     def click_to_ingredient_by_name(self, ingredient_name: str) -> None:
         locator = MainLocators.ingredient_by_name(ingredient_name)
-        element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        self.driver.execute_script("arguments[0].click();", element)
+        self.wait_clickable(locator)
+        self.scroll_to(locator)
+        self.js_click(locator)
+        
 
     @allure.step("Получить название ингредиента из открытого модального окна")
     def get_modal_ingredient_title(self) -> str:
-        element = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(IngredientDetailsModalLocators.INGREDIENT_NAME))
+        element = self.wait_visible(IngredientDetailsModalLocators.INGREDIENT_NAME)
         return element.text
 
     @allure.step("Закрыть модальное окно ингридинта")
     def close_modals(self) -> None:
-        self.click(IngredientDetailsModalLocators.CLOSE_BUTTON) 
+        self.js_click(IngredientDetailsModalLocators.CLOSE_BUTTON) 
+        is_hiden = self.wait_invisible(IngredientDetailsModalLocators.CLOSE_BUTTON)
+        return is_hiden
 
     @allure.title("Получаем количество позиций ингридиента в конструкторе")
     def get_ingredient_count(self, ingredient_name: str) -> int:
@@ -41,9 +42,9 @@ class MainPage(BasePage):
     @allure.step("Перетащить ингредиент '{ingredient_name}' в конструктор")
     def drag_and_drop_ingredient(self, ingredient_name: str) -> None:
         ingredient_locator = MainLocators.ingredient_by_name(ingredient_name)
-        source_element = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(ingredient_locator))
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", source_element)
-        target_element = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(MainLocators.CONSTRUCTOR_BASKET))
+        source_element = self.wait_visible(ingredient_locator)
+        self.scroll_to(ingredient_locator)
+        target_element = self.wait_visible(MainLocators.CONSTRUCTOR_BASKET)
         js_drag_and_drop = """
                 function createEvent(typeOfEvent) {
                     var event = document.createEvent("CustomEvent");

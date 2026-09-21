@@ -1,4 +1,3 @@
-from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -21,6 +20,10 @@ class BasePage:
     def find(self, locator) -> WebElement:
         return self.wait.until(EC.visibility_of_element_located(locator))
 
+    def find_all(self, locator, timeout=10) -> list[WebElement]:
+        WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+        return self.driver.find_elements(*locator)
+    
     def click(self, locator) -> None:
         self.wait_clickable(locator).click()
 
@@ -72,4 +75,12 @@ class BasePage:
 
     def wait_url_contains(self, text: str) -> None:
         self.wait.until(EC.url_contains(text))
-        
+
+    def get_current_url(self) -> str:
+        return self.driver.current_url  
+
+    def wait_invisible(self, locator) -> bool:
+            return WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(locator))
+
+    def wait_presence(self, locator, timeout=10) -> WebElement:
+        return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))

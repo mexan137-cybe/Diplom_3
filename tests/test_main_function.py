@@ -3,10 +3,7 @@ import pytest
 from data.config import Url
 from pages.main_page import MainPage
 from pages.login_page import LoginPage
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from data.api_helper import get_one_ingredients_of_each_type
-
 
 class TestMainFunction:
 
@@ -15,16 +12,16 @@ class TestMainFunction:
         login_page = LoginPage(driver)
         login_page.open()
         login_page.go_to_constructor()
-        was_redirected = WebDriverWait(driver, 10).until(EC.url_contains(Url.BASE_URL))
-        assert was_redirected
+        login_page.wait_url_contains(Url.BASE_URL)
+        assert login_page.get_current_url().rstrip('/') == Url.BASE_URL
 
     @allure.title('Переход в ленту заказов')
     def test_redirect_to_orders(self, driver):
         login_page = LoginPage(driver)
         login_page.open()
         login_page.go_to_orders()
-        was_redirected = WebDriverWait(driver, 10).until(EC.url_contains(Url.ORDERS))
-        assert was_redirected
+        login_page.wait_url_contains(Url.ORDERS)
+        assert login_page.get_current_url() == (Url.BASE_URL + Url.ORDERS)
 
     @pytest.mark.parametrize("ingredient",get_one_ingredients_of_each_type())
     @allure.title('Открытие окна с деталями об ингридиенте')
@@ -41,9 +38,9 @@ class TestMainFunction:
         elements = get_one_ingredients_of_each_type()
         elements_name = elements[1]["name"]
         main_page.click_to_ingredient_by_name(elements_name)
-        main_page.close_modals()
-        was_redirected = WebDriverWait(login_user, 10).until(EC.url_contains(Url.BASE_URL))
-        assert was_redirected
+        is_hiden = main_page.close_modals()
+        assert is_hiden
+        
 
     @allure.title("Проверка добавления соуса в конструктор через Drag and Drop")
     def test_add_sauce_to_constructor(self, login_user):
