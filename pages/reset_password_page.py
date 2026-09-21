@@ -3,7 +3,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from locators.reset_password_locators import ResetPasswordLocators
 from pages.base_page import BasePage
 
-
 class ResetPasswordPage(BasePage):
 
     def get_password_input(self):
