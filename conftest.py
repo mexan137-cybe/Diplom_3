@@ -12,7 +12,6 @@ from webdriver_manager.firefox import GeckoDriverManager
 from data.generators import generate_user_registration_data
 from data.config import ApiUrl
 from pages.login_page import LoginPage
-from locators.main_page_locators import MainLocators
 
 WINDOW_SIZE = (1440, 900)
 
@@ -90,5 +89,4 @@ def login_user(driver, create_user):
     login_page.fill_email(data["user"]["email"])
     login_page.fill_password(data["password"])
     login_page.authorized_user()
-    login_page.wait_visible(MainLocators.ORDER_BUTTON)
     return driver
