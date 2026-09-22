@@ -84,3 +84,43 @@ class BasePage:
 
     def wait_presence(self, locator, timeout=10) -> WebElement:
         return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+    
+    def drag_and_drop(self, source_element, target_element) -> None:
+        js_drag_and_drop = """
+                        function createEvent(typeOfEvent) {
+                            var event = document.createEvent("CustomEvent");
+                            event.initCustomEvent(typeOfEvent, true, true, null);
+                            event.dataTransfer = {
+                                data: {},
+                                setData: function (key, value) { this.data[key] = value; },
+                                getData: function (key) { return this.data[key]; }
+                            };
+                            return event;
+                        }
+                
+                        function dispatchEvent(element, eventType, dragEvent) {
+                            if (element.dispatchEvent) {
+                                element.dispatchEvent(dragEvent);
+                            } else if (element.fireEvent) {
+                                element.fireEvent("on" + eventType, dragEvent);
+                            }
+                        }
+                
+                        var source = arguments[0];
+                        var target = arguments[1];
+                
+                        var dragStartEvent = createEvent('dragstart');
+                        dispatchEvent(source, 'dragstart', dragStartEvent);
+                
+                        var dragEnterEvent = createEvent('dragenter');
+                        dispatchEvent(target, 'dragenter', dragEnterEvent);
+                
+                        var dropEvent = createEvent('drop', dragStartEvent.dataTransfer);
+                        dropEvent.dataTransfer = dragStartEvent.dataTransfer;
+                        dispatchEvent(target, 'drop', dropEvent);
+                
+                        var dragEndEvent = createEvent('dragend', dragStartEvent.dataTransfer);
+                        dispatchEvent(source, 'dragend', dragEndEvent);
+                        """
+        self.driver.execute_script(js_drag_and_drop, source_element, target_element)
+         

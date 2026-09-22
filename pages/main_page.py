@@ -45,43 +45,7 @@ class MainPage(BasePage):
         source_element = self.wait_visible(ingredient_locator)
         self.scroll_to(ingredient_locator)
         target_element = self.wait_visible(MainLocators.CONSTRUCTOR_BASKET)
-        js_drag_and_drop = """
-                function createEvent(typeOfEvent) {
-                    var event = document.createEvent("CustomEvent");
-                    event.initCustomEvent(typeOfEvent, true, true, null);
-                    event.dataTransfer = {
-                        data: {},
-                        setData: function (key, value) { this.data[key] = value; },
-                        getData: function (key) { return this.data[key]; }
-                    };
-                    return event;
-                }
-        
-                function dispatchEvent(element, eventType, dragEvent) {
-                    if (element.dispatchEvent) {
-                        element.dispatchEvent(dragEvent);
-                    } else if (element.fireEvent) {
-                        element.fireEvent("on" + eventType, dragEvent);
-                    }
-                }
-        
-                var source = arguments[0];
-                var target = arguments[1];
-        
-                var dragStartEvent = createEvent('dragstart');
-                dispatchEvent(source, 'dragstart', dragStartEvent);
-        
-                var dragEnterEvent = createEvent('dragenter');
-                dispatchEvent(target, 'dragenter', dragEnterEvent);
-        
-                var dropEvent = createEvent('drop', dragStartEvent.dataTransfer);
-                dropEvent.dataTransfer = dragStartEvent.dataTransfer;
-                dispatchEvent(target, 'drop', dropEvent);
-        
-                var dragEndEvent = createEvent('dragend', dragStartEvent.dataTransfer);
-                dispatchEvent(source, 'dragend', dragEndEvent);
-                """
-        self.driver.execute_script(js_drag_and_drop, source_element, target_element)
+        self.drag_and_drop(source_element, target_element)
 
     @allure.step("Нажать кнопку «Оформить заказ» ")
     def click_to_create_order_button(self): 
