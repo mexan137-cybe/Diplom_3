@@ -3,6 +3,7 @@ import pytest
 from data.config import Url
 from pages.main_page import MainPage
 from pages.login_page import LoginPage
+from pages.order_created_page import OrderCreatedModal
 from data.api_helper import get_one_ingredients_of_each_type
 
 class TestMainFunction:
@@ -56,6 +57,7 @@ class TestMainFunction:
         elements = get_one_ingredients_of_each_type()
         sauce_name = elements[1]["name"]  
         main_page.drag_and_drop_ingredient(sauce_name)
-        order = main_page.click_to_create_order_button()   
+        main_page.click_to_create_order_button()   
+        order = OrderCreatedModal(login_user)
         order_id = order.get_order_id()
         assert order_id.isdigit() and order_id != "0000"

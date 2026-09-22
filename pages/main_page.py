@@ -50,7 +50,7 @@ class MainPage(BasePage):
     @allure.step("Нажать кнопку «Оформить заказ» ")
     def click_to_create_order_button(self): 
         self.js_click(MainLocators.ORDER_BUTTON)
-        return OrderCreatedModal(self.driver)
+        #return OrderCreatedModal(self.driver)
 
     @allure.step("Нажать «Лента заказов»")
     def go_to_orders(self) -> None:
