@@ -1,7 +1,6 @@
 import allure
 from data.config import Url
 from locators.login_page_locators import LoginLocators
-from locators.main_page_locators import MainLocators
 from pages.base_page import BasePage
 
 
@@ -27,7 +26,7 @@ class LoginPage(BasePage):
     @allure.step("Нажать «Войти»")
     def authorized_user(self):
         self.js_click(LoginLocators.LOGIN_BUTTON)
-        self.wait_visible(MainLocators.ORDER_BUTTON)
+        self.wait_invisible(LoginLocators.LOGIN_BUTTON)
 
     @allure.step("Нажать «Конструктор»")
     def go_to_constructor(self) -> None:
